@@ -55,7 +55,7 @@ const FAC=[
  {n:3,name:'Pittman Park',addr:'950 Garibaldi St SW, Atlanta, GA 30310',lat:33.729878,lon:-84.399143},
  {n:4,name:'Mozley Park',addr:'1690 Martin Luther King Jr Dr SW, Atlanta, GA 30314',lat:33.751453,lon:-84.442305},
 ];
-const map=L.map('map',{scrollWheelZoom:true});
+const map=L.map('map',{scrollWheelZoom:true}).setView([33.748,-84.39],11);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
 const MILE=1609.344;
 const icon=f=>L.divIcon({className:'',html:`<div class="marker-pin"></div><div class="marker-num">${f.n}</div>`,iconSize:[28,40],iconAnchor:[14,40],popupAnchor:[0,-38]});
