@@ -60,7 +60,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,att
 const MILE=1609.344;
 const icon=f=>L.divIcon({className:'',html:`<div class="marker-pin"></div><div class="marker-num">${f.n}</div>`,iconSize:[28,40],iconAnchor:[14,40],popupAnchor:[0,-38]});
 const markers={};
-const circles=L.layerGroup().addTo(map);
+const circles=L.featureGroup().addTo(map);
 FAC.forEach(f=>{
  // yellow 5-mile radius circle
  L.circle([f.lat,f.lon],{radius:5*MILE,color:'#E0A800',weight:3,opacity:.95,fillColor:'#FFD500',fillOpacity:.18}).addTo(circles);
