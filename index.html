@@ -15,6 +15,8 @@
  .top .badge svg{width:26px;height:26px}
  .top h1{font-size:17px;margin:0;font-weight:800;letter-spacing:.3px}
  .top .sub{font-size:12px;opacity:.92;margin-top:1px}
+ .tbtn{margin-left:auto;background:#fff;color:#B8860B;border:0;border-radius:8px;padding:8px 14px;font-weight:800;font-size:13px;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.18)}
+ .tbtn.on{background:#E0A800;color:#fff}
  .body{flex:1;display:flex;min-height:0}
  .side{width:340px;max-width:44%;background:#fff;border-right:1px solid var(--line);overflow-y:auto}
  .grp{font-size:12px;text-transform:uppercase;letter-spacing:.6px;font-weight:800;color:#fff;background:var(--navy);padding:9px 16px;position:sticky;top:0}
@@ -38,11 +40,12 @@
  <div class="top">
   <span class="badge"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="23" fill="#0000FF"/><g stroke="#fff" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M16 12v22"/><path d="M32 12v22"/><path d="M15 20h18"/><path d="M16 34l-4 4"/><path d="M32 34l4 4"/><path d="M20 12h8v6h-8z" fill="#fff" stroke="none"/></g></svg></span>
   <div><h1>Water Parks</h1><div class="sub">StandGuard Aquatics — 4 locations · 5-mile radius (10-mile diameter)</div></div>
+  <button id="cirBtn" class="tbtn on">◎ Radius circles</button>
  </div>
  <div class="body">
   <div class="side">
    <div id="legend"></div>
-   <div class="foot">Each yellow ring is a 5-mile radius (10-mile diameter) around the water park. The shaded area outside the navy line is outside City of Atlanta limits. Tap a location to zoom to it.</div>
+   <div class="foot">Press <b style="color:#B8860B">Radius circles</b> to hide or show the 5-mile radius (10-mile diameter) yellow rings. The shaded area outside the navy line is outside City of Atlanta limits. Tap a location to zoom to it.</div>
   </div>
   <div id="map"></div>
  </div>
@@ -62,7 +65,8 @@ const CITY={"type":"MultiPolygon","coordinates":[[[[-84.5508,33.7284],[-84.5506,
 const cityHoles=CITY.coordinates.map(poly=>poly[0].map(([lon,lat])=>[lat,lon]));
 const worldRing=[[85,-180],[85,180],[-85,180],[-85,-180]];
 L.polygon([worldRing,...cityHoles],{stroke:false,fillColor:'#ffffff',fillOpacity:.92,interactive:false}).addTo(map);
-L.geoJSON(CITY,{style:{color:'#0A1657',weight:2.5,opacity:.95,fill:false},interactive:false}).addTo(map);
+const cityOutline=L.geoJSON(CITY,{style:{color:'#0A1657',weight:2.5,opacity:.95,fill:false},interactive:false}).addTo(map);
+const cityBounds=cityOutline.getBounds();
 const MILE=1609.344;
 const icon=f=>L.divIcon({className:'',html:`<div class="marker-pin"></div><div class="marker-num">${f.n}</div>`,iconSize:[28,40],iconAnchor:[14,40],popupAnchor:[0,-38]});
 const markers={};
@@ -75,6 +79,14 @@ FAC.forEach(f=>{
  markers[f.n]=m;
 });
 map.fitBounds(circles.getBounds(),{padding:[30,30]});
+// toggle circles on/off
+let cirOn=true;
+const cirBtn=document.getElementById('cirBtn');
+cirBtn.onclick=function(){
+ cirOn=!cirOn;
+ if(cirOn){circles.addTo(map);this.classList.add('on');map.fitBounds(circles.getBounds(),{padding:[25,25]});}
+ else{map.removeLayer(circles);this.classList.remove('on');map.fitBounds(cityBounds,{padding:[15,15]});}
+};
 // legend
 document.getElementById('legend').innerHTML=
  `<div class="grp">Water Parks <span class="c">· 4 locations</span></div>`+
